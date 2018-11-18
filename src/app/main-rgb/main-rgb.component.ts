@@ -14,7 +14,7 @@ export class MainRGBComponent {
     baster() {
         const img = document.getElementById('image_1')
 
-        RGBaster.colors(img, {
+        /* RGBaster.colors(img, {
             success: function (payload) {
                 console.log('dominant', payload.dominant)
                 console.log('secondary', payload.secondary)
@@ -35,7 +35,7 @@ export class MainRGBComponent {
                 }
 
             }
-        })
+        }) */
     }
 
 }
