@@ -3,8 +3,16 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
-};
+    production: false,
+    firebase: {
+        apiKey: 'AIzaSyDq1sMDkBQ3m09nsgmqa7w8OlFL5mEhWi4',
+        authDomain: 'gradient-mat-card.firebaseapp.com',
+        databaseURL: 'https://gradient-mat-card.firebaseio.com',
+        projectId: 'gradient-mat-card',
+        storageBucket: '',
+        messagingSenderId: '860777338389'
+    }
+}
 
 /*
  * In development mode, to ignore zone related error stack frames such as
