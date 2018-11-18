@@ -4,6 +4,7 @@ import { ColorThief } from './color-thief.js'
 
 // import ColorThief from 'color-thief'
 // import Cropper from 'cropperjs'
+import { AngularFirestore } from '@angular/fire/firestore';
 
 interface PostMeta {
     img: string
@@ -100,7 +101,7 @@ export class VibrantComponent implements OnInit {
     ctx: CanvasRenderingContext2D
     image = null
 
-    constructor() {
+    constructor(db: AngularFirestore) {
         // window.onload = () => this.getPaletteFromImage()
     }
 
