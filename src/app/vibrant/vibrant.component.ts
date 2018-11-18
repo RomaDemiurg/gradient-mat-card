@@ -139,9 +139,9 @@ export class VibrantComponent implements OnInit {
         })
     }
 
-    toRgb(arr: []): string {
+    /* toRgb(arr: []): string {
         return 'rgb(' + arr[0] + ',' + arr[1] + ',' + arr[2] + ')'
-    }
+    } */
 
     initCanvas() {
         this.image = new Image()
