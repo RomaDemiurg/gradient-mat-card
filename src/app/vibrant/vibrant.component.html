@@ -1,0 +1,308 @@
+<!-- <div style="width: 300px;">
+    <img id="img_1" src="assets/img/1.jpg" style="width: 300px;">
+</div> -->
+
+
+<div class="table">
+    <div class="tableRow">
+        <div class="tableCell box">
+            <!-- <canvas id="panel" width="380" height="380"></canvas> -->
+            <div id="panel-img" style="width: 500px"></div>
+            <p>
+                <input type="button" id="cropBttn" value="Crop">
+            </p>
+        </div>
+        <div class="tableCell box">
+            <img src="" id="croppedImageTop" style="width: 500px">
+            <div id="top"></div>
+            <img src="" id="croppedImageBottom" style="width: 500px">
+            <div id="bottom"></div>
+        </div>
+    </div>
+</div>
+
+<div class="grid-container">
+
+    <!-- <div colorify-get-gradient>
+        <img src="assets/img/564x702.jpg" width="200px">
+    </div> -->
+
+    <!-- <div [ngStyle]="{'width': '100px', 'height': '50px', 'background': vibrant, 'color': vibrant}">
+        <span style="display: block; margin-left: 70px; padding-top: 14px;">vibrant</span>
+    </div> -->
+    <!-- <div [ngStyle]="{'width': '50px', 'height': '50px', 'background': darkVibrant, 'color': darkVibrant}">
+        <span style="display: block; margin-left: 70px; padding-top: 14px;">darkVibrant</span>
+    </div>
+    <div [ngStyle]="{'width': '50px', 'height': '50px', 'background': muted, 'color': muted}">
+        <span style="display: block; margin-left: 70px; padding-top: 14px;">muted</span>
+    </div> -->
+    <!-- <div [ngStyle]="{'width': '100px', 'height': '100px', 'background': darkMuted, 'color': darkMuted}">
+        <span style="display: block; margin-left: 120px; padding-top: 14px; font-size: 20px; font-weight: 900;">darkMuted</span>
+    </div>
+    <div [ngStyle]="{'width': '100px', 'height': '50px', 'background': lightMuted, 'color': lightMuted}">
+        <span style="display: block; margin-left: 120px; padding-top: 14px; font-size: 20px; font-weight: 900;">lightMuted</span>
+    </div> -->
+
+    <mat-card class="example-card mat-elevation-z24" [ngStyle]="{'background': postsMeta[3].cardBackgroundGradient}">
+        <mat-card-header>
+            <div mat-card-avatar class="example-header-image"></div>
+            <mat-card-title>Shiba Inu</mat-card-title>
+            <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+        </mat-card-header>
+
+        <div [ngStyle]="{'background': postsMeta[3].backgroundImg, 'margin': postsMeta[3].margin}">
+            <div [ngStyle]="{'height': postsMeta[3].height, 'background': postsMeta[3].imgBackgroundGradient}"></div>
+        </div>
+
+        <mat-card-content>
+            <p>
+                The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes
+                very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
+            </p>
+        </mat-card-content>
+        <mat-card-actions align='end'>
+            <button mat-icon-button color="primary" (click)="postsMeta[3].showComment = !postsMeta[3].showComment">
+                <mat-icon>favorite</mat-icon> 14
+            </button>
+            <button mat-icon-button color="accent">
+                <mat-icon>share</mat-icon> 6
+            </button>
+        </mat-card-actions>
+        
+        <mat-nav-list class="mat-list" *ngIf="postsMeta[3].showComment">
+            <mat-divider></mat-divider>
+            <h3 mat-subheader>Folders</h3>
+            <mat-list-item *ngFor="let folder of folders">
+                <img mat-list-avatar [src]="folder.avatar" class="header-image">
+                <!-- <div mat-card-avatar class="example-header-image"></div> -->
+                <h4 mat-line>{{folder.name}}</h4>
+                <p mat-line> {{folder.updated | date}} </p>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <h3 mat-subheader>Notes</h3>
+            <mat-list-item *ngFor="let note of notes">
+                <mat-icon mat-list-icon>note</mat-icon>
+                <h4 mat-line>{{note.name}}</h4>
+                <p mat-line> {{note.updated | date}} </p>
+            </mat-list-item>
+        </mat-nav-list>
+    </mat-card>
+
+    <mat-card class="example-card mat-elevation-z24" [ngStyle]="{'background': postsMeta[4].cardBackgroundGradient}">
+        <mat-card-header>
+            <div mat-card-avatar class="example-header-image"></div>
+            <mat-card-title class="black">Shiba Inu</mat-card-title>
+            <mat-card-subtitle class="black">Dog Breed</mat-card-subtitle>
+        </mat-card-header>
+
+        <div [ngStyle]="{'background': postsMeta[4].backgroundImg, 'margin': postsMeta[4].margin}">
+            <div [ngStyle]="{'height': postsMeta[4].height, 'background': postsMeta[4].imgBackgroundGradient}"></div>
+        </div>
+
+        <mat-card-content class="card-content">
+            <p class="white">
+                The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes
+                very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
+            </p>
+        </mat-card-content>
+
+        <mat-card-actions align='end'>
+            <button mat-icon-button color="primary" (click)="postsMeta[4].showComment = !postsMeta[4].showComment">
+                <mat-icon>favorite</mat-icon> 14
+            </button>
+            <button mat-icon-button color="accent">
+                <mat-icon>share</mat-icon> 6
+            </button>
+        </mat-card-actions>
+
+        <mat-nav-list class="mat-list" *ngIf="postsMeta[4].showComment">
+            <mat-divider class="mat-divider-white"></mat-divider>
+            <h3 mat-subheader class="white">Folders</h3>
+            <mat-list-item *ngFor="let folder of folders" class="white">
+                <img mat-list-avatar [src]="folder.avatar" class="header-image">
+                <!-- <div mat-card-avatar class="example-header-image"></div> -->
+                <h4 mat-line>{{folder.name}}</h4>
+                <p mat-line> {{folder.updated | date}} </p>
+            </mat-list-item>
+            <mat-divider class="mat-divider-white"></mat-divider>
+            <h3 mat-subheader class="white">Notes</h3>
+            <mat-list-item *ngFor="let note of notes" class="white">
+                <mat-icon mat-list-icon>note</mat-icon>
+                <h4 mat-line>{{note.name}}</h4>
+                <p mat-line> {{note.updated | date}} </p>
+            </mat-list-item>
+        </mat-nav-list>
+    </mat-card>
+    
+<div style="display: flex;">
+    <mat-card class="example-card mat-card3 mat-elevation-z24">
+        <mat-card-header>
+            <div mat-card-avatar class="example-header-image"></div>
+            <mat-card-title>Shiba Inu</mat-card-title>
+            <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+        </mat-card-header>
+
+        <div class="container3">
+            <div class="tinted-image3">
+            </div>
+        </div>
+
+        <mat-card-content>
+            <p>
+                The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes
+                very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
+            </p>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-button>LIKE</button>
+            <button mat-button>SHARE</button>
+        </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="example-card mat-elevation-z24" [ngStyle]="{'background': postsMeta[5].cardBackgroundGradient}">
+        <mat-card-header>
+            <div mat-card-avatar class="example-header-image"></div>
+            <mat-card-title class="white">Shiba Inu</mat-card-title>
+            <mat-card-subtitle class="white">Dog Breed</mat-card-subtitle>
+        </mat-card-header>
+
+        <div [ngStyle]="{'background': postsMeta[5].backgroundImg, 'margin': postsMeta[5].margin}">
+            <div [ngStyle]="{'height': postsMeta[5].height, 'background': postsMeta[5].imgBackgroundGradient}"></div>
+        </div>
+
+        <mat-card-content>
+            <p>
+                The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes
+                very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
+            </p>
+        </mat-card-content>
+
+        <mat-card-actions align='end'>
+            <button mat-icon-button color="primary" (click)="postsMeta[5].showComment = !postsMeta[5].showComment">
+                <mat-icon>favorite</mat-icon> 14
+            </button>
+            <button mat-icon-button color="accent">
+                <mat-icon>share</mat-icon> 6
+            </button>
+        </mat-card-actions>
+
+        <mat-nav-list class="mat-list" *ngIf="postsMeta[5].showComment">
+            <mat-divider class="mat-divider-white"></mat-divider>
+            <h3 mat-subheader class="white">Folders</h3>
+            <mat-list-item *ngFor="let folder of folders" class="white">
+                <img mat-list-avatar [src]="folder.avatar" class="header-image">
+                <!-- <div mat-card-avatar class="example-header-image"></div> -->
+                <h4 mat-line>{{folder.name}}</h4>
+                <p mat-line> {{folder.updated | date}} </p>
+            </mat-list-item>
+            <mat-divider class="mat-divider-white"></mat-divider>
+            <h3 mat-subheader class="white">Notes</h3>
+            <mat-list-item *ngFor="let note of notes" class="white">
+                <mat-icon mat-list-icon>note</mat-icon>
+                <h4 mat-line>{{note.name}}</h4>
+                <p mat-line> {{note.updated | date}} </p>
+            </mat-list-item>
+        </mat-nav-list>
+    </mat-card>
+
+</div>
+
+    <mat-card class="example-card mat-card4 mat-elevation-z24">
+        <mat-card-header>
+            <div mat-card-avatar class="example-header-image"></div>
+            <mat-card-title>Shiba Inu</mat-card-title>
+            <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+        </mat-card-header>
+
+        <div class="container4">
+            <div class="tinted-image4">
+            </div>
+        </div>
+
+        <mat-card-content>
+            <p>
+                The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes
+                very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
+            </p>
+        </mat-card-content>
+        <mat-card-actions align='end'>
+            <!-- <button mat-stroked-button color='primary'>LIKE</button>
+                        <button mat-button>SHARE</button> -->
+            <button mat-icon-button color="primary">
+                <mat-icon>favorite</mat-icon> 13
+            </button>
+            <button mat-icon-button color="accent">
+                <mat-icon>share</mat-icon> 6
+            </button>
+        </mat-card-actions>
+    </mat-card>
+
+    <mat-card class="example-card mat-card5 black mat-elevation-z24">
+        <mat-card-header>
+            <div mat-card-avatar class="example-header-image"></div>
+            <mat-card-title class="card-title-black">Shiba Inu</mat-card-title>
+            <mat-card-subtitle class="card-subtitle-black">Dog Breed</mat-card-subtitle>
+        </mat-card-header>
+
+        <div class="container5">
+            <div class="tinted-image5">
+            </div>
+        </div>
+
+        <mat-card-content>
+            <p>
+                The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes
+                very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
+            </p>
+        </mat-card-content>
+        <mat-card-actions align='end'>
+            <!-- <button mat-stroked-button color='primary'>LIKE</button>
+                            <button mat-button>SHARE</button> -->
+            <button mat-icon-button color="primary">
+                <mat-icon>favorite</mat-icon> 13
+            </button>
+            <button mat-icon-button color="accent">
+                <mat-icon>share</mat-icon> 6
+            </button>
+        </mat-card-actions>
+    </mat-card>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+    <mat-grid-list cols="2" rowHeight="350px">
+        <mat-grid-tile *ngFor="let card of cards" [colspan]="card.cols" [rowspan]="card.rows">
+            <mat-card class="dashboard-card">
+                <mat-card-header>
+                    <mat-card-title>
+                        {{card.title}}
+                        <button mat-icon-button class="more-button" [matMenuTriggerFor]="menu" aria-label="Toggle menu">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu" xPosition="before">
+                            <button mat-menu-item>Expand</button>
+                            <button mat-menu-item>Remove</button>
+                        </mat-menu>
+                    </mat-card-title>
+                </mat-card-header>
+                <mat-card-content class="dashboard-card-content">
+                    <div>Card Content Here</div>
+                </mat-card-content>
+            </mat-card>
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>

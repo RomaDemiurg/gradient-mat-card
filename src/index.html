@@ -1,14 +1,73 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>GradientMatCard</title>
-  <base href="/">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-</head>
-<body>
-  <app-root></app-root>
-</body>
+    <head>
+            <base href="/">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+        <!-- <link rel="stylesheet" href="../node_modules/colorify.js/styles/colorify.css"> -->
+        <script type="application/javascript" src="assets/js/rgbaster.js"></script>
+        <!-- <script type="application/javascript" src="assets/js/color-thief.js"></script> -->
+        
+        <!-- <link href="./node_modules/cropperjs/dist/cropper.css" rel="stylesheet">
+        <script src="./node_modules/cropperjs/dist/cropper.js"></script> -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.4.1/cropper.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.4.1/cropper.js"></script>
+
+        <meta charset="utf-8">
+        <title>GradientMatCard</title>
+        
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/x-icon" href="favicon.ico">
+    </head>
+
+    <body>
+        <!-- <div colorify-get-gradient>
+            <img src="assets/img/564x702.jpg" style="width: 200px">
+        </div>
+
+        <div colorify-gradient-color>
+            <img colorify src="assets/img/2000x3000.jpg" style="width: 200px">
+        </div> -->
+
+        <!-- <canvas id="canvas" style="float:left"></canvas>
+        <div id="color" style="width:200px;height:50px;float:left"></div> -->
+
+        <app-root></app-root>
+
+    </body>
+    <!-- <script>
+        var img = new Image()
+        img.src = 'assets/img/564x702.jpg'
+
+        var canvas = document.getElementsByTagName('canvas')
+        canvas.item(0).setAttribute('width', '564px')
+        canvas.item(0).setAttribute('height', '702px')
+        var ctx = canvas.item(0).getContext('2d')
+
+        img.onload = function() {
+            ctx.drawImage(img, 0, 0)
+            img.style.display = 'none'
+        }
+
+        var color = document.getElementById('color')
+
+        function pick(event) {
+            var x = event.layerX
+            var y = event.layerY
+
+            console.log(x, y)
+
+            var pixel = ctx.getImageData(x, y, 1, 1)
+            var data = pixel.data
+            var rgba = 'rgba(' + data[0] + ', ' + data[1] + ', ' + data[2] + ', ' + (data[3] / 255) + ')'
+
+            color.style.background =  rgba
+            color.textContent = rgba
+        }
+
+        canvas.item(0).addEventListener('mousemove', pick)
+    </script> -->
+
 </html>
