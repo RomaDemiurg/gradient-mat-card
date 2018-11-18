@@ -10,6 +10,9 @@ import { MainRGBComponent } from './main-rgb/main-rgb.component';
 import { VibrantComponent } from './vibrant/vibrant.component';
 import { ImageCropperComponent } from './image-cropper/image-cropper.component';
 
+import { AngularFireModule } from '@angular/fire';
+import { environment } from '../environments/environment';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,6 +24,7 @@ import { ImageCropperComponent } from './image-cropper/image-cropper.component';
   ],
   imports: [
     BrowserModule,
+    AngularFireModule.initializeApp(environment.firebase),
     BrowserAnimationsModule,
     MatGridListModule,
     MatCardModule,
