@@ -233,3 +233,39 @@
     font-size: 16px;
     font-weight: 400;
   }
+
+  /*--------------------------------------*/
+
+  @import '../../styles/variables';
+
+.no-photo {
+  height: 150px;
+  width: 150px;
+  background: $grey;
+  margin: 1em 0;
+  color: white;
+  border-radius: 50%;
+}
+
+.profile-pic {
+  max-width: 150px;
+  max-height: 150px;
+  margin: 1em 0;
+}
+/* 
+input, textarea {
+  border: 2px solid $light-grey;
+  border-radius: 5px;
+  padding: .25em .5em;
+  margin-bottom: 1em;
+  width: 100%;
+  font-weight: 200;
+} */
+
+mat-form-field {
+    width: 100%;
+}
+
+.mat-icon {
+    font-size: 30px;
+}

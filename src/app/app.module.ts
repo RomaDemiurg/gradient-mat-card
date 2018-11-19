@@ -4,7 +4,8 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { MatGridListModule, MatCardModule, MatMenuModule, MatIconModule, MatButtonModule, MatListModule } from '@angular/material';
+import { MatGridListModule, MatCardModule, MatMenuModule, MatIconModule, 
+    MatButtonModule, MatListModule, MatInputModule } from '@angular/material';
 import { AverageRGBComponent } from './average-rgb/average-rgb.component';
 import { MainRGBComponent } from './main-rgb/main-rgb.component';
 import { VibrantComponent } from './vibrant/vibrant.component';
@@ -17,13 +18,16 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+
 const AngularMaterialFeatures = [
     MatGridListModule,
     MatCardModule,
     MatMenuModule,
     MatIconModule,
     MatButtonModule,
-    MatListModule
+    MatListModule,
+    MatInputModule
 ]
 
 const AngularFireFeatures = [
@@ -46,7 +50,9 @@ const AngularFireFeatures = [
     BrowserModule,
     ...AngularFireFeatures,
     BrowserAnimationsModule,
-    ...AngularMaterialFeatures
+    ...AngularMaterialFeatures,
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

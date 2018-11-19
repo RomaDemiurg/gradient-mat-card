@@ -9,7 +9,7 @@ export const environment = {
         authDomain: 'gradient-mat-card.firebaseapp.com',
         databaseURL: 'https://gradient-mat-card.firebaseio.com',
         projectId: 'gradient-mat-card',
-        storageBucket: '',
+        storageBucket: 'gradient-mat-card.appspot.com',
         messagingSenderId: '860777338389'
     }
 }

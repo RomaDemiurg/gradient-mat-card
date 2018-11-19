@@ -4,7 +4,11 @@ import { ColorThief } from './color-thief.js'
 
 // import ColorThief from 'color-thief'
 // import Cropper from 'cropperjs'
-import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { AngularFireStorage } from '@angular/fire/storage';
+import { Observable, Subscription } from 'rxjs';
+import { User } from '../classes/user.model';
+
 
 interface PostMeta {
     img: string
@@ -24,9 +28,16 @@ interface PostMeta {
     styleUrls: ['./vibrant.component.scss']
 })
 export class VibrantComponent implements OnInit {
-
     
-    postsMeta: PostMeta[] = []
+    // postsMeta: PostMeta[] = []
+    postsMeta: Observable<PostMeta[]>;
+
+    public currentUser: User = new User;
+    public userId = '';
+    private subsubscriptions: Subscription[] = [];
+    public uploadPercent: Observable<number>
+    public downloadUrl: string | null = null
+    fileName: string
 
     posts = [
         {
@@ -35,7 +46,8 @@ export class VibrantComponent implements OnInit {
             height: '600px',
             gradientTop: '585754',
             gradientBottom: '261b1a',
-            rgb1: 'linear-gradient(to bottom, #807c7a 0%, #807c7a 50%, #2e231e 50%, #2e231e 100%)'
+            rgb1: 'linear-gradient(to bottom, #807c7a 0%, #807c7a 50%, #2e231e 50%, #2e231e 100%)',
+            textColorBottom: '#FFFFFF'
         },
         {
             img: 'assets/img/2000x3000.jpg',
@@ -43,7 +55,8 @@ export class VibrantComponent implements OnInit {
             height: '600px',
             gradientTop: '838181',
             gradientBottom: '4f4235',
-            rgb1: 'linear-gradient(to bottom, #807c7a 0%, #807c7a 50%, #2e231e 50%, #2e231e 100%)'
+            rgb1: 'linear-gradient(to bottom, #807c7a 0%, #807c7a 50%, #2e231e 50%, #2e231e 100%)',
+            textColorBottom: '#FFFFFF'
         },
         {
             img: 'assets/img/5.jpg',
@@ -51,7 +64,8 @@ export class VibrantComponent implements OnInit {
             height: '600px',
             gradientTop: '807c7a',
             gradientBottom: '2e231e',
-            rgb1: 'linear-gradient(to bottom, #807c7a 0%, #807c7a 50%, #2e231e 50%, #2e231e 100%)'
+            rgb1: 'linear-gradient(to bottom, #807c7a 0%, #807c7a 50%, #2e231e 50%, #2e231e 100%)',
+            textColorBottom: '#FFFFFF'
         },
         {
             img: 'assets/img/5.jpg',
@@ -59,6 +73,7 @@ export class VibrantComponent implements OnInit {
             height: '600px',
             gradientTop: 'rgb(128, 124, 122)',
             gradientBottom: 'rgb(46, 35, 30)',
+            textColorBottom: '#FFFFFF'
         },
         {
             img: 'assets/img/4.jpg',
@@ -101,7 +116,10 @@ export class VibrantComponent implements OnInit {
     ctx: CanvasRenderingContext2D
     image = null
 
-    constructor(db: AngularFirestore) {
+    constructor(
+        private db: AngularFirestore,
+        private storage: AngularFireStorage,
+    ) {
         // window.onload = () => this.getPaletteFromImage()
     }
 
@@ -109,14 +127,23 @@ export class VibrantComponent implements OnInit {
         // let canvas = <HTMLCanvasElement> document.getElementById('panel')
         // this.ctx = canvas.getContext('2d')
 
-        this.initCanvas()
+        // this.initCanvas()
 
-        document.getElementById('cropBttn').onclick = () => {
+        /* document.getElementById('cropBttn').onclick = () => {
             this.cropTop()
             this.cropBottom()
-        }
+        } */
 
-        this.posts.forEach(post => {
+        /* this.db.collection('posts').valueChanges().subscribe(o => {
+            
+        }) */
+
+        this.postsMeta = this.db.collection<PostMeta>('posts').valueChanges();
+
+        this.currentUser.id = 'Roma'
+        this.currentUser.photoUrl = 'Roma_photoUrl'
+
+        /* this.posts.forEach(post => {
             const postMeta: PostMeta = {
                 img: post.img,
                 backgroundImg: 'url(' + post.img + ') no-repeat round',
@@ -137,7 +164,46 @@ export class VibrantComponent implements OnInit {
 
             console.log(postMeta)
             this.postsMeta.push(postMeta)
+            this.db.collection('posts').add(postMeta).then(res => {
+                console.log('res:', res)
+            })
+        }) */
+    }
+
+    public uploadFile(input: HTMLInputElement): void {
+        const file: File = input.files.item(0)
+        const filePath = `${this.currentUser.id}_${file.name}`
+        const afUploadTask = this.storage.upload(filePath, file)
+
+        this.fileName = file.name
+
+        // get notified when the download URL is available
+        afUploadTask.then(snap => {
+            snap.ref.getDownloadURL().then(url => this.downloadUrl = url)
         })
+
+        // observe the percentage changes
+        this.uploadPercent = afUploadTask.percentageChanges()
+    }
+    
+    public save(): void {
+        let photo;
+    
+        if (this.downloadUrl) {
+          photo = this.downloadUrl;
+        } else {
+          photo = this.currentUser.photoUrl;
+        }
+    
+        const user = Object.assign({}, this.currentUser, {photoUrl: photo});
+        const userRef: AngularFirestoreDocument<User> = this.db.doc(`users/${user.id}`);
+        userRef.set(user)
+          .then(() => {
+            console.log('Your profile was successfully updated!')
+          })
+          .catch(error => {
+            console.log('profile updating error')
+          });
     }
 
     /* toRgb(arr: []): string {
