@@ -114,7 +114,7 @@ export class VibrantComponent implements OnInit {
     ]
 
     ctx: CanvasRenderingContext2D
-    image = null
+    image: HTMLImageElement = null
 
     constructor(
         private db: AngularFirestore,
@@ -126,17 +126,6 @@ export class VibrantComponent implements OnInit {
     ngOnInit() {
         // let canvas = <HTMLCanvasElement> document.getElementById('panel')
         // this.ctx = canvas.getContext('2d')
-
-        // this.initCanvas()
-
-        /* document.getElementById('cropBttn').onclick = () => {
-            this.cropTop()
-            this.cropBottom()
-        } */
-
-        /* this.db.collection('posts').valueChanges().subscribe(o => {
-            
-        }) */
 
         this.postsMeta = this.db.collection<PostMeta>('posts').valueChanges();
 
@@ -179,7 +168,10 @@ export class VibrantComponent implements OnInit {
 
         // get notified when the download URL is available
         afUploadTask.then(snap => {
-            snap.ref.getDownloadURL().then(url => this.downloadUrl = url)
+            snap.ref.getDownloadURL().then(url => {
+                this.downloadUrl = url
+                this.initCanvas()
+            })
         })
 
         // observe the percentage changes
@@ -212,15 +204,21 @@ export class VibrantComponent implements OnInit {
 
     initCanvas() {
         this.image = new Image()
-        this.image.setAttribute('crossOrigin', 'anonymous')
-        this.image.src = './assets/img/2.jpg'
+        this.image.setAttribute('crossOrigin', 'http://localhost:4200')
+        this.image.src = this.downloadUrl
 
-        let panel_img = <HTMLImageElement> document.getElementById('panel-img')
+        this.image.onload = () => {
+            console.log('OnLoad...')
+            this.cropTop()
+            this.cropBottom()
+        }
+
+        /* let panel_img = <HTMLImageElement> document.getElementById('panel-img')
 
         const img = document.createElement('img')
         img.style.width = '500px'
         img.src = this.image.src
-        panel_img.appendChild(img)
+        panel_img.appendChild(img) */
 
         /* this.image.onload = () => {
             this.ctx.canvas.width = this.image.width
@@ -253,10 +251,11 @@ export class VibrantComponent implements OnInit {
             this.image.height / 4
         )
 
-        let imageData = tempCtx.canvas.toDataURL()
-        let croppedImage = <HTMLImageElement> document.getElementById('croppedImageTop')
-        croppedImage.src = imageData
-        this.getPaletteFromImage(croppedImage, 'top')
+        let imageData = tempCtx.canvas
+        this.getPaletteFromImage(imageData, 'top')
+        // let croppedImage = <HTMLImageElement> document.getElementById('croppedImageTop')
+        // croppedImage.src = imageData
+        // this.getPaletteFromImage(croppedImage, 'top')
     }
 
     cropBottom() {
@@ -283,13 +282,14 @@ export class VibrantComponent implements OnInit {
             this.image.height / 4
         )
 
-        let imageData = tempCtx.canvas.toDataURL()
-        let croppedImage = <HTMLImageElement> document.getElementById('croppedImageBottom')
+        let imageData = tempCtx.canvas
+        this.getPaletteFromImage(imageData, 'bottom')
+        /* let croppedImage = <HTMLImageElement> document.getElementById('croppedImageBottom')
         croppedImage.src = imageData
-        this.getPaletteFromImage(croppedImage, 'bottom')
+        this.getPaletteFromImage(croppedImage, 'bottom') */
     }
 
-    getPaletteFromImage(img: HTMLImageElement, topBottom: 'top' | 'bottom') {
+    getPaletteFromImage(img, topBottom: 'top' | 'bottom') {
 
         /* if (topBottom === 'top') {
             let top = document.getElementById('croppedImageTop')
@@ -307,22 +307,23 @@ export class VibrantComponent implements OnInit {
             console.log(color)
         } */
 
-        let dir: HTMLElement
+        /* let dir: HTMLElement
         if (topBottom === 'top') {
             dir = document.getElementById('top')
         } else {
             dir = document.getElementById('bottom')
-        }
+        } */
 
         setTimeout(() => {
             const colorThief = new ColorThief()
             const rgbArr: number[] = colorThief.getColor(img)
             const rgbStr = 'rgb(' + rgbArr[0] + ',' + rgbArr[1] + ',' + rgbArr[2] + ')'
+            console.log('rgbStr:', rgbStr)
 
             const textColor = this.invertColor(rgbArr)
             console.log('Text color:', textColor)
 
-            const div = document.createElement('div')
+            /* const div = document.createElement('div')
             div.style.margin = '30px'
             div.style.width = '100px'
             div.style.height = '100px'
@@ -330,7 +331,7 @@ export class VibrantComponent implements OnInit {
             div.style.cssFloat = 'left'
             div.innerHTML = '<p style="color: ' + textColor + '">' + rgbArr + '</p>'
             div.style.background = rgbStr
-            dir.appendChild(div)
+            dir.appendChild(div) */
 
             // this.posts.push()
         }, 1)
