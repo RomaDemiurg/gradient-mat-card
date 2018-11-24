@@ -45,7 +45,7 @@ export class ColorThief {
      * 10 is the default. There is a trade-off between quality and speed. The bigger the number, the
      * faster the palette generation but the greater the likelihood that colors will be missed.
      */
-    getPalette(sourceImage: CanvasImageSource, colorCount?: number, quality?: number): [ {r: number, g: number, b: number} ]
+    getPalette(sourceImage: CanvasImageSource, colorCount?: number, quality?: number): Array<{r: number, g: number, b: number}>
 
     getColorFromUrl(imageUrl, callback, quality): void
 

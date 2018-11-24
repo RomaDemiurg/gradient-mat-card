@@ -102,9 +102,20 @@ export class ColorThief {
         // using median cut algorithm
         var cmap = MMCQ.quantize(pixelArray, colorCount);
         var palette = cmap ? cmap.palette() : null;
+
+        let rgbPaletteArray = []
+        palette.forEach((colorArray) => {
+            let rgbObject = {
+                r: colorArray[0],
+                g: colorArray[1],
+                b: colorArray[2]
+            }
+            rgbPaletteArray.push(rgbObject)
+        })
+
         // Clean up
         image.removeCanvas();
-        return palette;
+        return rgbPaletteArray;
     }
 
     getColorFromUrl(imageUrl, callback, quality) {
