@@ -24,9 +24,9 @@ export class VibrantComponent implements OnInit {
     uploadPercent: Observable<number>
     downloadUrl: string | null = null
     fileName: string
-    ctx: CanvasRenderingContext2D = document.createElement('canvas').getContext('2d')
     image: HTMLImageElement = new Image()
     reader: FileReader = new FileReader()
+    colorThief = new ColorThief()
 
     constructor(
         private db: AngularFirestore,
@@ -99,85 +99,75 @@ export class VibrantComponent implements OnInit {
             this.image.src = <string> this.reader.result
 
             this.image.onload = () => {
-                this.cropTop()
-                this.cropBottom()
+                const { canvasTop, canvasBottom } = this.cropImage()
+                const { colorTop, colorBottom } = this.getColors(canvasTop, canvasBottom)
+                const { rgbStrTop, rgbStrBottom } = this.getRGBStr(colorTop, colorBottom)
+                const { textColorTop, textColorBottom } = this.getTextColors(colorTop, colorBottom)
             }
         }
     }
 
-    cropTop() {
-        this.ctx.canvas.width = this.image.width
-        this.ctx.canvas.height = this.image.height / 4
+    private cropImage() {
+        let canvasTop = this.cropImageTop()
+        let canvasBottom = this.cropImageBottom()
+        return { canvasTop, canvasBottom }
+    }
+
+    private getColors(canvasTop: HTMLCanvasElement, canvasBottom: HTMLCanvasElement) {
+        const colorTop = this.getColorFromImage(canvasTop, 'top')
+        console.log('colorTop:', colorTop)
+        const colorBottom = this.getColorFromImage(canvasBottom, 'bottom')
+        console.log('colorBottom:', colorBottom)
+        return { colorTop, colorBottom }
+    }
+
+    private getRGBStr(colorTop: RGB, colorBottom: RGB) {
+        const rgbStrTop = this.getRGBStrFromRGBObj(colorTop)
+        console.log('rgbStrTop:', rgbStrTop)
+        const rgbStrBottom = this.getRGBStrFromRGBObj(colorBottom)
+        console.log('rgbStrBottom:', rgbStrBottom)
+        return { rgbStrTop, rgbStrBottom }
+    }
+
+    private getTextColors(colorTop: RGB, colorBottom: RGB) {
+        const textColorTop = this.getTextColorFromRGBObj(colorTop)
+        console.log('textColorTop:', textColorTop)
+        const textColorBottom = this.getTextColorFromRGBObj(colorBottom)
+        console.log('textColorBottom:', textColorBottom)
+        return { textColorTop, textColorBottom }
+    }
+
+    private cropImageTop(): HTMLCanvasElement {
+        const ctx = document.createElement('canvas').getContext('2d')
+
+        ctx.canvas.width = this.image.width
+        ctx.canvas.height = this.image.height / 4
         
-        console.log(
-            'x:', 0,
-            'y:', 0,
-            'w:', this.image.width,
-            'h:', this.image.height / 4
-        )
-
-        this.ctx.drawImage(
-            this.image, 
-            0,
-            0,
-            this.image.width,
-            this.image.height / 4,
-            0, 
-            0, 
-            this.image.width,
-            this.image.height / 4
-        )
-
-        this.getPaletteFromImage(this.ctx.canvas, 'top')
+        ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height / 4, 0, 0, this.image.width, this.image.height / 4)
+        return ctx.canvas
     }
 
-    cropBottom() {
-        this.ctx.canvas.width = this.image.width
-        this.ctx.canvas.height = this.image.height / 4
+    private cropImageBottom(): HTMLCanvasElement {
+        const ctx = document.createElement('canvas').getContext('2d')
 
-        console.log(
-            'x:', 0,
-            'y:', this.image.height - (this.image.height / 4),
-            'w:', this.image.width,
-            'h:', this.image.height / 4
-        )
+        ctx.canvas.width = this.image.width
+        ctx.canvas.height = this.image.height / 4
 
-        this.ctx.drawImage(
-            this.image, 
-            0,
-            this.image.height - (this.image.height / 4),
-            this.image.width,
-            this.image.height / 4,
-            0, 
-            0,
-            this.image.width,
-            this.image.height / 4
-        )
-
-        this.getPaletteFromImage(this.ctx.canvas, 'bottom')
+        ctx.drawImage(this.image, 0, this.image.height - (this.image.height / 4), this.image.width, this.image.height / 4, 0, 0, this.image.width, this.image.height / 4)
+        return ctx.canvas
     }
 
-    getPaletteFromImage(img: CanvasImageSource, topBottom: 'top' | 'bottom') {
-        const colorThief = new ColorThief
-
-        /* let palette = colorThief.getPalette(img, 5, 1)
-        console.log('Palette:', palette) */
-
-        let color: RGB = colorThief.getColor(img, 1)
-        console.log('Color:', color)
-
-        const rgbStr = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')'
-        console.log('rgbStr:', rgbStr)
-
-        const textColor = this.invertColor(color)
-        console.log('Text color:', textColor)
+    private getColorFromImage(img: CanvasImageSource, topBottom: 'top' | 'bottom'): RGB {
+        return this.colorThief.getColor(img, 1)
     }
 
-    invertColor(color: RGB) {
+    private getRGBStrFromRGBObj(color: RGB): string {
+        return 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')'
+    }
+
+    private getTextColorFromRGBObj(color: RGB): '#000000' | '#FFFFFF' {
         // http://stackoverflow.com/a/3943023/112731
-        return (color.r * 0.299 + color.g * 0.587 + color.b * 0.114) > 186
-            ? '#000000'
-            : '#FFFFFF'
+        return (color.r * 0.299 + color.g * 0.587 + color.b * 0.114) > 186 ? '#000000' : '#FFFFFF'
     }
 
 }
