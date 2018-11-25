@@ -1,3 +1,5 @@
+import { RGB } from "./color-thief.model";
+
 /**
  * CanvasImage Class
  * 
@@ -28,7 +30,7 @@ export class ColorThief {
      * faster a color will be returned but the greater the likelihood that it will not be the visually
      * most dominant color.
      */
-    getColor(sourceImage: CanvasImageSource, quality?: number): {r: number, g: number, b: number}
+    getColor(sourceImage: CanvasImageSource, quality?: number): RGB
 
     /**
      * getPalette(sourceImage[, colorCount, quality])
@@ -45,7 +47,7 @@ export class ColorThief {
      * 10 is the default. There is a trade-off between quality and speed. The bigger the number, the
      * faster the palette generation but the greater the likelihood that colors will be missed.
      */
-    getPalette(sourceImage: CanvasImageSource, colorCount?: number, quality?: number): Array<{r: number, g: number, b: number}>
+    getPalette(sourceImage: CanvasImageSource, colorCount?: number, quality?: number): Array<RGB>
 
     getColorFromUrl(imageUrl, callback, quality): void
 
