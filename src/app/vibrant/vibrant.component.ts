@@ -45,19 +45,17 @@ export class VibrantComponent implements OnInit {
         if (!this.getFileFromInput(input)) return
 
         const file: File = this.getFileFromInput(input)
-
         this.fileName = file.name
         
-        
-        const imageSrc = await this.convertFileToImageSrcString(file)
-        const image = await this.setImageSrc(imageSrc)
+        const imageSrc = await this.getImageSrc(file)
+        const image = await this.getImage(imageSrc)
 
         const uploadMetadata: UploadMetadata = this.getUploadMetadata(image)
         const downloadUrl = await this.uploadFileToStorage(file, uploadMetadata).then(url => url)
         console.log(downloadUrl)
     }
 
-    private convertFileToImageSrcString(file: File) {
+    private getImageSrc(file: File) {
         const reader: FileReader = new FileReader()
         reader.readAsDataURL(file)
 
@@ -66,7 +64,7 @@ export class VibrantComponent implements OnInit {
         })
     }
 
-    private setImageSrc(imageSrc: string) {
+    private getImage(imageSrc: string) {
         const image: HTMLImageElement = new Image()
         image.src = imageSrc
         
