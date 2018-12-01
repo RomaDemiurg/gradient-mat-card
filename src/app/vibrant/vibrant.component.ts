@@ -51,8 +51,12 @@ export class VibrantComponent implements OnInit {
         const image: HTMLImageElement = await this.getImage(imageSrc)
 
         const uploadMetadata: UploadMetadata = this.getUploadMetadata(image)
-        const downloadUrl = await this.uploadFileToStorage(file, uploadMetadata).then(url => url)
+        const downloadUrl: string = await this.uploadFileToStorage(file, uploadMetadata)
         console.log(downloadUrl)
+    }
+
+    private getFileFromInput(input: HTMLInputElement): File {
+        return input.files[0]
     }
 
     private getImageSrc(file: File): Promise<string> {
@@ -73,21 +77,7 @@ export class VibrantComponent implements OnInit {
         })
     }
 
-    private getFileFromInput(input: HTMLInputElement): File {
-        return input.files[0]
-    }
-
-    private async uploadFileToStorage(file: File, uploadMetadata: UploadMetadata) {
-        const filePath = `${this.currentUser.id}_${file.name}`
-        const afUploadTask = this.storage.upload(filePath, file, uploadMetadata)
-
-        this.uploadPercent = afUploadTask.percentageChanges()
-        
-        const downloadUrl = await afUploadTask.task.snapshot.ref.getDownloadURL().then((url: string) => url)
-        return this.downloadUrl = downloadUrl
-    }
-
-    private getUploadMetadata(image: HTMLImageElement) {
+    private getUploadMetadata(image: HTMLImageElement): UploadMetadata {
         const { canvasTop, canvasBottom } = this.cropImage(image)
         const { colorTop, colorBottom } = this.getColors(canvasTop, canvasBottom)
         const { rgbStrTop, rgbStrBottom } = this.getRGBStr(colorTop, colorBottom)
@@ -101,6 +91,16 @@ export class VibrantComponent implements OnInit {
             }
         }
         return uploadMetadata
+    }
+
+    private async uploadFileToStorage(file: File, uploadMetadata: UploadMetadata): Promise<string> {
+        const filePath = `${this.currentUser.id}_${file.name}`
+        const afUploadTask = this.storage.upload(filePath, file, uploadMetadata)
+
+        this.uploadPercent = afUploadTask.percentageChanges()
+        
+        const downloadUrl = await afUploadTask.task.snapshot.ref.getDownloadURL().then((url: string) => url)
+        return this.downloadUrl = downloadUrl
     }
 
     save(): void {
