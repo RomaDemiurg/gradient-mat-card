@@ -24,8 +24,8 @@ export class VibrantComponent implements OnInit {
     uploadPercent: Observable<number>
     downloadUrl: string | null = null
     fileName: string
-    image: HTMLImageElement = new Image()
-    reader: FileReader = new FileReader()
+    // image: HTMLImageElement = new Image()
+    // reader: FileReader = new FileReader()
     colorThief = new ColorThief()
 
     constructor(
@@ -40,38 +40,71 @@ export class VibrantComponent implements OnInit {
         this.currentUser.photoUrl = 'Roma_photoUrl'
     }
 
-    uploadFile(input: HTMLInputElement): void {
+    async uploadFile(input: HTMLInputElement) {
 
-        const file: File = input.files[0]
+        if (!this.getFileFromInput(input)) return
 
-        if (!file) {return}
-
-        this.setImage(file)
-
-        let meta: UploadMetadata = {
-            customMetadata: {
-                colorTop: '{r: 10, g: 20, b: 30}',
-                colorBottom: '{r: 40, g: 50, b: 60}'
-            }
-        }
-
-        const filePath = `${this.currentUser.id}_${file.name}`
-        const afUploadTask = this.storage.upload(filePath, file, meta)
+        const file: File = this.getFileFromInput(input)
 
         this.fileName = file.name
+        
+        
+        const imageSrc = await this.convertFileToImageSrcString(file)
+        const image = await this.setImageSrc(imageSrc)
 
-        // get notified when the download URL is available
-        afUploadTask.then(snap => {
-            snap.ref.getDownloadURL().then(url => {
-                this.downloadUrl = url
-                // this.initCanvas()
-            })
-        })
-
-        // observe the percentage changes
-        this.uploadPercent = afUploadTask.percentageChanges()
+        const uploadMetadata: UploadMetadata = this.getUploadMetadata(image)
+        const downloadUrl = await this.uploadFileToStorage(file, uploadMetadata).then(url => url)
+        console.log(downloadUrl)
     }
-    
+
+    private convertFileToImageSrcString(file: File) {
+        const reader: FileReader = new FileReader()
+        reader.readAsDataURL(file)
+
+        return new Promise<string>(resolve => {
+            reader.onload = () => resolve(<string>reader.result)
+        })
+    }
+
+    private setImageSrc(imageSrc: string) {
+        const image: HTMLImageElement = new Image()
+        image.src = imageSrc
+        
+        return new Promise<HTMLImageElement>(resolve => {
+            image.onload = () => resolve(image)
+        })
+    }
+
+    private getFileFromInput(input: HTMLInputElement): File {
+        return input.files[0]
+    }
+
+    private async uploadFileToStorage(file: File, uploadMetadata: UploadMetadata) {
+        const filePath = `${this.currentUser.id}_${file.name}`
+        const afUploadTask = this.storage.upload(filePath, file, uploadMetadata)
+
+        this.uploadPercent = afUploadTask.percentageChanges()
+        
+        const downloadUrl = await afUploadTask.task.snapshot.ref.getDownloadURL().then((url: string) => url)
+        return this.downloadUrl = downloadUrl
+    }
+
+    private getUploadMetadata(image: HTMLImageElement) {
+        const { canvasTop, canvasBottom } = this.cropImage(image)
+        const { colorTop, colorBottom } = this.getColors(canvasTop, canvasBottom)
+        const { rgbStrTop, rgbStrBottom } = this.getRGBStr(colorTop, colorBottom)
+        const { textColorTop, textColorBottom } = this.getTextColors(colorTop, colorBottom)
+        let uploadMetadata: UploadMetadata = {
+            customMetadata: {
+                rgbStrTop,
+                rgbStrBottom,
+                textColorTop,
+                textColorBottom
+            }
+        }
+        return uploadMetadata
+    }
+
     save(): void {
         let photo
     
@@ -92,24 +125,9 @@ export class VibrantComponent implements OnInit {
             })
     }
 
-    setImage(file: File) {
-        this.reader.readAsDataURL(file)
-
-        this.reader.onload = () => {
-            this.image.src = <string> this.reader.result
-
-            this.image.onload = () => {
-                const { canvasTop, canvasBottom } = this.cropImage()
-                const { colorTop, colorBottom } = this.getColors(canvasTop, canvasBottom)
-                const { rgbStrTop, rgbStrBottom } = this.getRGBStr(colorTop, colorBottom)
-                const { textColorTop, textColorBottom } = this.getTextColors(colorTop, colorBottom)
-            }
-        }
-    }
-
-    private cropImage() {
-        let canvasTop = this.cropImageTop()
-        let canvasBottom = this.cropImageBottom()
+    private cropImage(image: HTMLImageElement) {
+        let canvasTop = this.cropImageTop(image)
+        let canvasBottom = this.cropImageBottom(image)
         return { canvasTop, canvasBottom }
     }
 
@@ -137,23 +155,23 @@ export class VibrantComponent implements OnInit {
         return { textColorTop, textColorBottom }
     }
 
-    private cropImageTop(): HTMLCanvasElement {
+    private cropImageTop(image: HTMLImageElement): HTMLCanvasElement {
         const ctx = document.createElement('canvas').getContext('2d')
 
-        ctx.canvas.width = this.image.width
-        ctx.canvas.height = this.image.height / 4
+        ctx.canvas.width = image.width
+        ctx.canvas.height = image.height / 4
         
-        ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height / 4, 0, 0, this.image.width, this.image.height / 4)
+        ctx.drawImage(image, 0, 0, image.width, image.height / 4, 0, 0, image.width, image.height / 4)
         return ctx.canvas
     }
 
-    private cropImageBottom(): HTMLCanvasElement {
+    private cropImageBottom(image: HTMLImageElement): HTMLCanvasElement {
         const ctx = document.createElement('canvas').getContext('2d')
 
-        ctx.canvas.width = this.image.width
-        ctx.canvas.height = this.image.height / 4
+        ctx.canvas.width = image.width
+        ctx.canvas.height = image.height / 4
 
-        ctx.drawImage(this.image, 0, this.image.height - (this.image.height / 4), this.image.width, this.image.height / 4, 0, 0, this.image.width, this.image.height / 4)
+        ctx.drawImage(image, 0, image.height - (image.height / 4), image.width, image.height / 4, 0, 0, image.width, image.height / 4)
         return ctx.canvas
     }
 
