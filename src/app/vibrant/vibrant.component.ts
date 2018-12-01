@@ -99,7 +99,7 @@ export class VibrantComponent implements OnInit {
 
         this.uploadPercent = afUploadTask.percentageChanges()
         
-        const downloadUrl = await afUploadTask.task.snapshot.ref.getDownloadURL().then((url: string) => url)
+        const downloadUrl: string = await afUploadTask.task.snapshot.ref.getDownloadURL()
         return this.downloadUrl = downloadUrl
     }
 
