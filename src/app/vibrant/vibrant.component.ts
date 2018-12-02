@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { ColorThief } from './color-thief.js'
 
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore'
-import { AngularFireStorage } from '@angular/fire/storage'
+import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage'
 import { Observable, Subscription } from 'rxjs'
 import { User } from '../classes/user.model'
 import { PostMeta } from '../models/post-meta.model'
@@ -51,7 +51,9 @@ export class VibrantComponent implements OnInit {
         const image: HTMLImageElement = await this.getImage(imageSrc)
 
         const uploadMetadata: UploadMetadata = this.getUploadMetadata(image)
-        const downloadUrl: string = await this.uploadFileToStorage(file, uploadMetadata)
+        const afUploadTask = this.uploadToStorage(file, uploadMetadata)
+        const uploadPercent = this.getUploadPercent(afUploadTask)
+        const downloadUrl = await this.getDownloadURL(afUploadTask)
         console.log(downloadUrl)
     }
 
@@ -93,14 +95,20 @@ export class VibrantComponent implements OnInit {
         return uploadMetadata
     }
 
-    private async uploadFileToStorage(file: File, uploadMetadata: UploadMetadata): Promise<string> {
+    private uploadToStorage(file: File, uploadMetadata: UploadMetadata): AngularFireUploadTask {
         const filePath = `${this.currentUser.id}_${file.name}`
         const afUploadTask = this.storage.upload(filePath, file, uploadMetadata)
+        return afUploadTask
+    }
 
-        this.uploadPercent = afUploadTask.percentageChanges()
-        
-        const downloadUrl: string = await afUploadTask.task.snapshot.ref.getDownloadURL()
-        return this.downloadUrl = downloadUrl
+    private getUploadPercent(afUploadTask: AngularFireUploadTask): Observable<number> {
+        const uploadPercent = this.uploadPercent = afUploadTask.percentageChanges()
+        return uploadPercent
+    }
+
+    private async getDownloadURL(afUploadTask: AngularFireUploadTask): Promise<string> {
+        const downloadUrl: string = this.downloadUrl = await afUploadTask.task.snapshot.ref.getDownloadURL()
+        return downloadUrl
     }
 
     save(): void {
