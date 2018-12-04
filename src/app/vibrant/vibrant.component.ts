@@ -7,7 +7,10 @@ import { Observable, Subscription } from 'rxjs'
 import { User } from '../classes/user.model'
 import { PostMeta } from '../models/post-meta.model'
 import { RGB } from './color-thief.model'
-import { UploadMetadata } from '@angular/fire/storage/interfaces';
+import { UploadMetadata } from '@angular/fire/storage/interfaces'
+import { ImageInputService } from './classes/image-input.service'
+import { StorageUploadService } from './storage-upload.service'
+import { ImageService } from './classes/image.service'
 
 
 @Component({
@@ -20,17 +23,29 @@ export class VibrantComponent implements OnInit {
     postsMeta: Observable<PostMeta[]>
     currentUser: User = new User
     userId = ''
-    private subsubscriptions: Subscription[] = []
+    private subscriptions: Subscription[] = []
     uploadPercent: Observable<number>
     downloadUrl: string | null = null
     fileName: string
     // image: HTMLImageElement = new Image()
     // reader: FileReader = new FileReader()
     colorThief = new ColorThief()
+    folders = [
+        { avatar: 'assets/img/avatars/1.jpg', name: 'Photos', updated: new Date('1/1/16') },
+        { avatar: 'assets/img/avatars/2.jpg', name: 'Recipes', updated: new Date('1/17/16') },
+        { avatar: 'assets/img/avatars/3.jpg', name: 'Work', updated: new Date('1/28/16') }
+    ]
+
+    notes = [
+        { name: 'Vacation Itinerary', updated: new Date('2/20/16') },
+        { name: 'Kitchen Remodel', updated: new Date('1/18/16') }
+    ]
 
     constructor(
         private db: AngularFirestore,
-        private storage: AngularFireStorage,
+        private storageService: StorageUploadService,
+        private imageInputService: ImageInputService,
+        private imageService: ImageService
     ) { }
 
     ngOnInit() {
@@ -42,48 +57,28 @@ export class VibrantComponent implements OnInit {
 
     async uploadFile(input: HTMLInputElement) {
 
-        if (!this.getFileFromInput(input)) return
+        if (!this.imageInputService.getFileFromInput(input)) return
 
-        const file: File = this.getFileFromInput(input)
+        const file: File = this.imageInputService.getFileFromInput(input)
         this.fileName = file.name
         
-        const imageSrc: string = await this.getImageSrc(file)
-        const image: HTMLImageElement = await this.getImage(imageSrc)
+        const imageSrc: string = await this.imageInputService.getImageSrc(file)
+        const image: HTMLImageElement = await this.imageInputService.getImage(imageSrc)
 
         const uploadMetadata: UploadMetadata = this.getUploadMetadata(image)
-        const afUploadTask = this.uploadToStorage(file, uploadMetadata)
-        const uploadPercent = this.getUploadPercent(afUploadTask)
-        const downloadUrl = await this.getDownloadURL(afUploadTask)
+        const afUploadTask = this.storageService.uploadToStorage(file, uploadMetadata)
+        const uploadPercent = this.storageService.getUploadPercent(afUploadTask)
+        this.uploadPercent = uploadPercent
+        const downloadUrl = await this.storageService.getDownloadURL(afUploadTask)
+        this.downloadUrl = downloadUrl
         console.log(downloadUrl)
     }
 
-    private getFileFromInput(input: HTMLInputElement): File {
-        return input.files[0]
-    }
-
-    private getImageSrc(file: File): Promise<string> {
-        const reader: FileReader = new FileReader()
-        reader.readAsDataURL(file)
-
-        return new Promise<string>(resolve => {
-            reader.onload = () => resolve(<string>reader.result)
-        })
-    }
-
-    private getImage(imageSrc: string): Promise<HTMLImageElement> {
-        const image: HTMLImageElement = new Image()
-        image.src = imageSrc
-        
-        return new Promise<HTMLImageElement>(resolve => {
-            image.onload = () => resolve(image)
-        })
-    }
-
     private getUploadMetadata(image: HTMLImageElement): UploadMetadata {
-        const { canvasTop, canvasBottom } = this.cropImage(image)
-        const { colorTop, colorBottom } = this.getColors(canvasTop, canvasBottom)
-        const { rgbStrTop, rgbStrBottom } = this.getRGBStr(colorTop, colorBottom)
-        const { textColorTop, textColorBottom } = this.getTextColors(colorTop, colorBottom)
+        const { canvasTop, canvasBottom } = this.imageService.cropImage(image)
+        const { colorTop, colorBottom } = this.imageService.getColors(canvasTop, canvasBottom)
+        const { rgbStrTop, rgbStrBottom } = this.imageService.getRGBStr(colorTop, colorBottom)
+        const { textColorTop, textColorBottom } = this.imageService.getTextColors(colorTop, colorBottom)
         let uploadMetadata: UploadMetadata = {
             customMetadata: {
                 rgbStrTop,
@@ -93,22 +88,6 @@ export class VibrantComponent implements OnInit {
             }
         }
         return uploadMetadata
-    }
-
-    private uploadToStorage(file: File, uploadMetadata: UploadMetadata): AngularFireUploadTask {
-        const filePath = `${this.currentUser.id}_${file.name}`
-        const afUploadTask = this.storage.upload(filePath, file, uploadMetadata)
-        return afUploadTask
-    }
-
-    private getUploadPercent(afUploadTask: AngularFireUploadTask): Observable<number> {
-        const uploadPercent = this.uploadPercent = afUploadTask.percentageChanges()
-        return uploadPercent
-    }
-
-    private async getDownloadURL(afUploadTask: AngularFireUploadTask): Promise<string> {
-        const downloadUrl: string = this.downloadUrl = await afUploadTask.task.snapshot.ref.getDownloadURL()
-        return downloadUrl
     }
 
     save(): void {
@@ -130,68 +109,4 @@ export class VibrantComponent implements OnInit {
                 console.log('profile updating error')
             })
     }
-
-    private cropImage(image: HTMLImageElement) {
-        let canvasTop = this.cropImageTop(image)
-        let canvasBottom = this.cropImageBottom(image)
-        return { canvasTop, canvasBottom }
-    }
-
-    private getColors(canvasTop: HTMLCanvasElement, canvasBottom: HTMLCanvasElement) {
-        const colorTop = this.getColorFromImage(canvasTop, 'top')
-        console.log('colorTop:', colorTop)
-        const colorBottom = this.getColorFromImage(canvasBottom, 'bottom')
-        console.log('colorBottom:', colorBottom)
-        return { colorTop, colorBottom }
-    }
-
-    private getRGBStr(colorTop: RGB, colorBottom: RGB) {
-        const rgbStrTop = this.getRGBStrFromRGBObj(colorTop)
-        console.log('rgbStrTop:', rgbStrTop)
-        const rgbStrBottom = this.getRGBStrFromRGBObj(colorBottom)
-        console.log('rgbStrBottom:', rgbStrBottom)
-        return { rgbStrTop, rgbStrBottom }
-    }
-
-    private getTextColors(colorTop: RGB, colorBottom: RGB) {
-        const textColorTop = this.getTextColorFromRGBObj(colorTop)
-        console.log('textColorTop:', textColorTop)
-        const textColorBottom = this.getTextColorFromRGBObj(colorBottom)
-        console.log('textColorBottom:', textColorBottom)
-        return { textColorTop, textColorBottom }
-    }
-
-    private cropImageTop(image: HTMLImageElement): HTMLCanvasElement {
-        const ctx = document.createElement('canvas').getContext('2d')
-
-        ctx.canvas.width = image.width
-        ctx.canvas.height = image.height / 4
-        
-        ctx.drawImage(image, 0, 0, image.width, image.height / 4, 0, 0, image.width, image.height / 4)
-        return ctx.canvas
-    }
-
-    private cropImageBottom(image: HTMLImageElement): HTMLCanvasElement {
-        const ctx = document.createElement('canvas').getContext('2d')
-
-        ctx.canvas.width = image.width
-        ctx.canvas.height = image.height / 4
-
-        ctx.drawImage(image, 0, image.height - (image.height / 4), image.width, image.height / 4, 0, 0, image.width, image.height / 4)
-        return ctx.canvas
-    }
-
-    private getColorFromImage(img: CanvasImageSource, topBottom: 'top' | 'bottom'): RGB {
-        return this.colorThief.getColor(img, 1)
-    }
-
-    private getRGBStrFromRGBObj(color: RGB): string {
-        return 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')'
-    }
-
-    private getTextColorFromRGBObj(color: RGB): '#000000' | '#FFFFFF' {
-        // http://stackoverflow.com/a/3943023/112731
-        return (color.r * 0.299 + color.g * 0.587 + color.b * 0.114) > 186 ? '#000000' : '#FFFFFF'
-    }
-
 }
