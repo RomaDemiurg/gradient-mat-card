@@ -1,16 +1,18 @@
 import { Component, OnInit } from '@angular/core'
-import { ColorThief } from './color-thief.js'
 
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore'
-import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/storage'
-import { Observable, Subscription } from 'rxjs'
+import { UploadMetadata } from '@angular/fire/storage/interfaces'
+
+import { Observable } from 'rxjs'
+
 import { User } from '../classes/user.model'
 import { PostMeta } from '../models/post-meta.model'
-import { RGB } from './color-thief.model'
-import { UploadMetadata } from '@angular/fire/storage/interfaces'
-import { ImageInputService } from './classes/image-input.service'
+
 import { StorageUploadService } from './storage-upload.service'
+import { ImageInputService } from './classes/image-input.service'
 import { ImageService } from './classes/image.service'
+
+import { folders, notes } from './static-data'
 
 
 @Component({
@@ -22,24 +24,11 @@ export class VibrantComponent implements OnInit {
     
     postsMeta: Observable<PostMeta[]>
     currentUser: User = new User
-    userId = ''
-    private subscriptions: Subscription[] = []
     uploadPercent: Observable<number>
     downloadUrl: string | null = null
     fileName: string
-    // image: HTMLImageElement = new Image()
-    // reader: FileReader = new FileReader()
-    colorThief = new ColorThief()
-    folders = [
-        { avatar: 'assets/img/avatars/1.jpg', name: 'Photos', updated: new Date('1/1/16') },
-        { avatar: 'assets/img/avatars/2.jpg', name: 'Recipes', updated: new Date('1/17/16') },
-        { avatar: 'assets/img/avatars/3.jpg', name: 'Work', updated: new Date('1/28/16') }
-    ]
-
-    notes = [
-        { name: 'Vacation Itinerary', updated: new Date('2/20/16') },
-        { name: 'Kitchen Remodel', updated: new Date('1/18/16') }
-    ]
+    folders = folders
+    notes = notes
 
     constructor(
         private db: AngularFirestore,
