@@ -5,10 +5,10 @@ import { UploadMetadata } from '@angular/fire/storage/interfaces'
 
 import { Observable } from 'rxjs'
 
-import { RGB } from './color-thief.model'
+import { RGB } from '../color-thief/color-thief.model'
 import { User } from '../classes/user.model'
 
-import { ColorThief } from './color-thief'
+import { ColorThief } from '../color-thief/color-thief'
 
 
 @Injectable({
