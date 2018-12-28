@@ -7,7 +7,7 @@ import { Observable } from 'rxjs'
 import { User } from '../classes/user.model'
 import { PostMeta } from '../models/post-meta.model'
 
-import { ImageService } from './classes/image.service'
+import { ImageService } from './image.service'
 
 import { folders, notes } from './static-data'
 
