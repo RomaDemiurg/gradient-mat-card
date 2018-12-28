@@ -1,15 +1,12 @@
 import { Component, OnInit } from '@angular/core'
 
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore'
-import { UploadMetadata } from '@angular/fire/storage/interfaces'
 
 import { Observable } from 'rxjs'
 
 import { User } from '../classes/user.model'
 import { PostMeta } from '../models/post-meta.model'
 
-import { StorageUploadService } from './storage-upload.service'
-import { ImageInputService } from './classes/image-input.service'
 import { ImageService } from './classes/image.service'
 
 import { folders, notes } from './static-data'
@@ -32,8 +29,6 @@ export class VibrantComponent implements OnInit {
 
     constructor(
         private db: AngularFirestore,
-        private storageService: StorageUploadService,
-        private imageInputService: ImageInputService,
         private imageService: ImageService
     ) { }
 
@@ -45,38 +40,15 @@ export class VibrantComponent implements OnInit {
     }
 
     async uploadFile(input: HTMLInputElement) {
+        const file = this.imageService.getFileFromInput(input)
 
-        if (!this.imageInputService.getFileFromInput(input)) return
+        if (!file) return
 
-        const file: File = this.imageInputService.getFileFromInput(input)
         this.fileName = file.name
-        
-        const imageSrc: string = await this.imageInputService.getImageSrc(file)
-        const image: HTMLImageElement = await this.imageInputService.getImage(imageSrc)
 
-        const uploadMetadata: UploadMetadata = this.getUploadMetadata(image)
-        const afUploadTask = this.storageService.uploadToStorage(file, uploadMetadata)
-        const uploadPercent = this.storageService.getUploadPercent(afUploadTask)
+        const {image, uploadMetadata, angularFireUploadTask, uploadPercent} = await this.imageService.uploadToStorage(file)
         this.uploadPercent = uploadPercent
-        const downloadUrl = await this.storageService.getDownloadURL(afUploadTask)
-        this.downloadUrl = downloadUrl
-        console.log(downloadUrl)
-    }
-
-    private getUploadMetadata(image: HTMLImageElement): UploadMetadata {
-        const { canvasTop, canvasBottom } = this.imageService.cropImage(image)
-        const { colorTop, colorBottom } = this.imageService.getColors(canvasTop, canvasBottom)
-        const { rgbStrTop, rgbStrBottom } = this.imageService.getRGBStr(colorTop, colorBottom)
-        const { textColorTop, textColorBottom } = this.imageService.getTextColors(colorTop, colorBottom)
-        let uploadMetadata: UploadMetadata = {
-            customMetadata: {
-                rgbStrTop,
-                rgbStrBottom,
-                textColorTop,
-                textColorBottom
-            }
-        }
-        return uploadMetadata
+        // this.downloadUrl = await downloadUrl
     }
 
     save(): void {
