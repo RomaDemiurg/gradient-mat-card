@@ -9,7 +9,7 @@ import { PostMeta } from '../models/post-meta.model'
 
 import { ImageService } from './image.service'
 
-import { folders, notes } from './static-data'
+import { folders, notes } from '../data/static-data'
 
 
 @Component({
