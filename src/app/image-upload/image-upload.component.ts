@@ -7,17 +7,17 @@ import { Observable } from 'rxjs'
 import { User } from '../classes/user.model'
 import { PostMeta } from '../models/post-meta.model'
 
-import { ImageService } from './image.service'
+import { ImageUploadService } from './image-upload.service'
 
 import { folders, notes } from '../data/static-data'
 
 
 @Component({
-    selector: 'app-vibrant',
-    templateUrl: './vibrant.component.html',
-    styleUrls: ['./vibrant.component.scss']
+    selector: 'app-image-upload',
+    templateUrl: './image-upload.component.html',
+    styleUrls: ['./image-upload.component.scss']
 })
-export class VibrantComponent implements OnInit {
+export class ImageUploadComponent implements OnInit {
     
     postsMeta: Observable<PostMeta[]>
     currentUser: User = new User
@@ -29,7 +29,7 @@ export class VibrantComponent implements OnInit {
 
     constructor(
         private db: AngularFirestore,
-        private imageService: ImageService
+        private imageUploadService: ImageUploadService
     ) { }
 
     ngOnInit() {
@@ -40,13 +40,13 @@ export class VibrantComponent implements OnInit {
     }
 
     async uploadFile(input: HTMLInputElement) {
-        const file = this.imageService.getFileFromInput(input)
+        const file = this.imageUploadService.getFileFromInput(input)
 
         if (!file) return
 
         this.fileName = file.name
 
-        const {image, uploadMetadata, angularFireUploadTask, uploadPercent} = await this.imageService.uploadToStorage(file)
+        const {image, uploadMetadata, angularFireUploadTask, uploadPercent} = await this.imageUploadService.uploadToStorage(file)
         this.uploadPercent = uploadPercent
         // this.downloadUrl = await downloadUrl
     }

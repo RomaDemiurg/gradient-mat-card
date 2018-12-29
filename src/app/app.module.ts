@@ -8,7 +8,7 @@ import { MatGridListModule, MatCardModule, MatMenuModule, MatIconModule,
     MatButtonModule, MatListModule, MatInputModule } from '@angular/material';
 import { AverageRGBComponent } from './average-rgb/average-rgb.component';
 import { MainRGBComponent } from './main-rgb/main-rgb.component';
-import { VibrantComponent } from './vibrant/vibrant.component';
+import { ImageUploadComponent } from './image-upload/image-upload.component';
 import { ImageCropperComponent } from './image-cropper/image-cropper.component';
 
 import { AngularFireModule } from '@angular/fire';
@@ -43,7 +43,7 @@ const AngularFireFeatures = [
     DashboardComponent,
     AverageRGBComponent,
     MainRGBComponent,
-    VibrantComponent,
+    ImageUploadComponent,
     ImageCropperComponent
   ],
   imports: [

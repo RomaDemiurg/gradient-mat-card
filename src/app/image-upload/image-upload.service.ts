@@ -14,7 +14,7 @@ import { ColorThief } from '../color-thief/color-thief'
 @Injectable({
     providedIn: 'root'
 })
-export class ImageService {
+export class ImageUploadService {
     private colorThief = new ColorThief()
 
     currentUser: User = new User
