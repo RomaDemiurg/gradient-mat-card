@@ -1,103 +1,38 @@
+<mat-card class="card-container mat-elevation-z24">
+    <div>{{ uploadPercent | async | number: '1.0-0' }}</div>
 
-<div class="grid-container">
-    <div class="container">
-        
-        <div>{{ uploadPercent | async | number: '1.0-0' }}</div>
-
-        <div *ngIf="currentUser else noPhoto">
-            <img *ngIf="!downloadUrl" [src]="currentUser.photoUrl" alt="profile-pic" class="rounded-circle mx-auto d-block profile-pic">
-            <img *ngIf="downloadUrl && downloadUrl.length > 0" [src]="downloadUrl" alt="profile-pic" class="rounded-circle mx-auto d-block profile-pic">
-        </div>
-
-        <mat-form-field *ngIf="currentUser">
-            <input matInput value="{{ fileName }}" placeholder="Image...">
-            <input #fileInput type="file" (change)="uploadFile(fileInput)" style="display:none;" />
-            <button mat-icon-button color="primary" matSuffix (click)="fileInput.click()">
-                <mat-icon>add</mat-icon>
-            </button>
-        </mat-form-field>
-
-        <mat-form-field *ngIf="currentUser">
-            <input matInput type="text" [(ngModel)]="currentUser.firstName" placeholder="First Name">
-        </mat-form-field>
-
-        <mat-form-field *ngIf="currentUser">
-            <input matInput type="text" [(ngModel)]="currentUser.lastName" placeholder="Last Name">
-        </mat-form-field>
-
-        <mat-form-field *ngIf="currentUser">
-            <input matInput type="text" [(ngModel)]="currentUser.quote" placeholder="Quote">
-        </mat-form-field>
-
-        <mat-form-field *ngIf="currentUser">
-            <textarea matInput rows="5" [(ngModel)]="currentUser.bio" placeholder="Bio"></textarea>
-        </mat-form-field>
-
-        <button mat-raised-button color="primary" (click)="save()" *ngIf="currentUser">Save Profile</button>
+    <div *ngIf="currentUser else noPhoto">
+        <img *ngIf="!downloadUrl" [src]="currentUser.photoUrl" alt="profile-pic" class="rounded-circle mx-auto d-block profile-pic">
+        <img *ngIf="downloadUrl && downloadUrl.length > 0" [src]="downloadUrl" alt="profile-pic" class="rounded-circle mx-auto d-block profile-pic">
     </div>
+
+    <mat-form-field *ngIf="currentUser">
+        <input matInput value="{{ fileName }}" placeholder="Image...">
+        <input #fileInput type="file" (change)="uploadFile(fileInput)" style="display:none;" />
+        <button mat-icon-button color="primary" matSuffix (click)="fileInput.click()">
+            <mat-icon>add</mat-icon>
+        </button>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="currentUser">
+        <input matInput type="text" [(ngModel)]="currentUser.firstName" placeholder="First Name">
+    </mat-form-field>
+
+    <mat-form-field *ngIf="currentUser">
+        <input matInput type="text" [(ngModel)]="currentUser.lastName" placeholder="Last Name">
+    </mat-form-field>
+
+    <mat-form-field *ngIf="currentUser">
+        <input matInput type="text" [(ngModel)]="currentUser.quote" placeholder="Quote">
+    </mat-form-field>
+
+    <mat-form-field *ngIf="currentUser">
+        <textarea matInput rows="5" [(ngModel)]="currentUser.bio" placeholder="Bio"></textarea>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="save()" *ngIf="currentUser">Save Profile</button>
     
     <ng-template #noPhoto>
         <div class="no-photo">No Photo</div>
     </ng-template>
-
-    <mat-card *ngFor="let post of postsMeta | async" class="example-card mat-elevation-z24" [ngStyle]="{'background': post.cardBackgroundGradient}">
-        <mat-card-header>
-            <div mat-card-avatar class="example-header-image"></div>
-            <mat-card-title>Shiba Inu</mat-card-title>
-            <mat-card-subtitle>Dog Breed</mat-card-subtitle>
-        </mat-card-header>
-
-        <div [ngStyle]="{'background': post.backgroundImg, 'margin': post.margin}">
-            <div [ngStyle]="{'height': post.height, 'background': post.imgBackgroundGradient}"></div>
-        </div>
-
-        <mat-card-content>
-            <p>
-                The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan. A small, agile dog that copes
-                very well with mountainous terrain, the Shiba Inu was originally bred for hunting.
-            </p>
-        </mat-card-content>
-        <mat-card-actions align='end'>
-            <button mat-icon-button color="primary" (click)="post.showComment = !post.showComment">
-                <mat-icon>favorite</mat-icon> 14
-            </button>
-            <button mat-icon-button color="accent">
-                <mat-icon>share</mat-icon> 6
-            </button>
-        </mat-card-actions>
-        
-        <mat-nav-list class="mat-list" *ngIf="post.showComment">
-            <mat-divider></mat-divider>
-            <h3 mat-subheader>Folders</h3>
-            <mat-list-item *ngFor="let folder of folders">
-                <img mat-list-avatar [src]="folder.avatar" class="header-image">
-                <!-- <div mat-card-avatar class="example-header-image"></div> -->
-                <h4 mat-line>{{folder.name}}</h4>
-                <p mat-line> {{folder.updated | date}} </p>
-            </mat-list-item>
-            <mat-divider></mat-divider>
-            <h3 mat-subheader>Notes</h3>
-            <mat-list-item *ngFor="let note of notes">
-                <mat-icon mat-list-icon>note</mat-icon>
-                <h4 mat-line>{{note.name}}</h4>
-                <p mat-line> {{note.updated | date}} </p>
-            </mat-list-item>
-        </mat-nav-list>
-    </mat-card>
-
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-</div>
+</mat-card>

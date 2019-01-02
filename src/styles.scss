@@ -23,3 +23,16 @@ button {
         }
     }
 }
+
+.card-container {
+	max-width: 352px;
+	margin: 0 auto;
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+
+.mat-card {
+	border-radius: 6px !important;
+	// background: #261b1a;
+	color: rgba(255, 255, 255, 0.5);
+}
