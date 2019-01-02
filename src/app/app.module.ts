@@ -21,7 +21,8 @@ import { AngularFirestoreModule } from '@angular/fire/firestore'
 import { AngularFireAuthModule } from '@angular/fire/auth'
 import { AngularFireStorageModule } from '@angular/fire/storage'
 
-import { ReactiveFormsModule, FormsModule } from '@angular/forms'
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { PostsComponent } from './posts/posts.component'
 
 const AngularMaterialFeatures = [
 	MatGridListModule,
@@ -41,7 +42,7 @@ const AngularFireFeatures = [
 ]
 
 @NgModule({
-	declarations: [ AppComponent, ImageUploadComponent ],
+	declarations: [ AppComponent, ImageUploadComponent, PostsComponent ],
 	imports: [
 		BrowserModule,
 		...AngularFireFeatures,
