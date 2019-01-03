@@ -30,9 +30,12 @@ export class ImageUploadComponent implements OnInit {
 
 		this.fileName = file.name
 
-		const { image, uploadMetadata, angularFireUploadTask, uploadPercent } = await this.imageUploadService.uploadToStorage(file)
-		this.uploadPercent = uploadPercent
-		// this.downloadUrl = await downloadUrl
+        const { image, uploadMetadata, uploadPercent, downloadUrl } = await this.imageUploadService.uploadToStorage(file)
+        
+        this.uploadPercent = uploadPercent
+        downloadUrl
+            .then(url => this.downloadUrl = url)
+            .catch(error => console.log(error.message))
 	}
 
 	save(): void {

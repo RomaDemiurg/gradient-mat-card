@@ -154,26 +154,15 @@ export class ImageUploadService {
         const angularFireUploadTask = this.storage.upload(filePath, file, uploadMetadata)
 
         const uploadPercent = this.getUploadPercent(angularFireUploadTask)
-        // const downloadUrl = this.getDownloadURL(angularFireUploadTask)
-        const finish = await this.pause()
-        // console.log('F:', finish)
+        const downloadUrl = this.getDownloadURL(angularFireUploadTask)
 
-        return {image, uploadMetadata, angularFireUploadTask, uploadPercent}
+        return {image, uploadMetadata, uploadPercent, downloadUrl}
     }
 
     private getUploadPercent(angularFireUploadTask: AngularFireUploadTask): Observable<number> {
         return angularFireUploadTask.percentageChanges()
     }
 
-    pause() {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve('finish..........')
-            }, 10)
-        })
-    }
-    
-    
     private getDownloadURL(angularFireUploadTask: AngularFireUploadTask): Promise<string> {
         return angularFireUploadTask.then(snap => {
             return snap.ref.getDownloadURL()

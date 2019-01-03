@@ -1,5 +1,5 @@
 <mat-card class="card-container mat-elevation-z24">
-    <div>{{ uploadPercent | async | number: '1.0-0' }}</div>
+    <div class="black">{{ uploadPercent | async | number: '1.0-0' }}</div>
 
     <div *ngIf="currentUser else noPhoto">
         <img *ngIf="!downloadUrl" [src]="currentUser.photoUrl" alt="profile-pic" class="rounded-circle mx-auto d-block profile-pic">
@@ -7,7 +7,7 @@
     </div>
 
     <mat-form-field *ngIf="currentUser">
-        <input matInput value="{{ fileName }}" placeholder="Image...">
+        <input matInput value="{{ fileName }}" class="black" placeholder="Image...">
         <input #fileInput type="file" (change)="uploadFile(fileInput)" style="display:none;" />
         <button mat-icon-button color="primary" matSuffix (click)="fileInput.click()">
             <mat-icon>add</mat-icon>
